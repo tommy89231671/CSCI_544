@@ -54,7 +54,7 @@ def read_txt(path):
 
 if __name__ == "__main__":
 	arg=sys.argv
-	path="./hmm-training-data/ja_gsd_train_tagged.txt"
+	path=arg[1]
 	read_txt(path)
 	f=open("hmmmodel.txt","w")
 	write_list=[tag_tag_tr_matrix,tag_tag_size_dict,tag_word_em_matrix,tag_word_size_dict]

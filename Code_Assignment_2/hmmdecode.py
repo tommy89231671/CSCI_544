@@ -14,10 +14,15 @@ word_set = set()
 
 
 tag_list=[]
-def predict(tagged_path,raw_path):
-    f_tagged = open(tagged_path,"r")
+def predict(raw_path):
+    # f_tagged = open(tagged_path,"r")
     f_raw = open(raw_path,"r")
-    for sentence in f_tagged.read().split('\n'):
+    f_outout = open("hmmoutput.txt",'w')
+    # for sentence in f_tagged.read().split('\n'):
+    result_str=""
+    raw_split = f_raw.read().split('\n')
+
+    for iii,sentence in enumerate(raw_split):
         state_pre_prob_dict={}
         state_prob_dict={}
         state_pretag_object_dict={}
@@ -33,12 +38,13 @@ def predict(tagged_path,raw_path):
                 state_pre_prob_dict.update({key:0})
                 state_pretag_object_dict.update({key:ListNode(key,head)})
 
-        for word_and_tag in sentence.split(' '):
-            tmp = word_and_tag.split('/')
-            word = "".join(tmp[:-1])
-            tag = tmp[-1]
-            print(word,tag)
-            groundtru.append(tag)
+        # for word_and_tag in sentence.split(' '):
+        for word in sentence.split(' '):
+            # tmp = word_and_tag.split('/')
+            # word = "".join(tmp[:-1])
+            # tag = tmp[-1]
+            # print(word)
+            # groundtru.append(tag)
             for key in tag_list:
                 pre_tag=""
                 if key!="INIT":
@@ -65,7 +71,7 @@ def predict(tagged_path,raw_path):
                              state_prob_dict.update({key:0})
                              state_tag_object_dict.update({key:ListNode(key,None)})
                     else:
-                        print(word," not in word_set")
+                        # print(word," not in word_set")
                         max_tmp_prob = -math.inf
                         for pre_key in tag_list: # find highest prob and pre_key
                             tmp_prob = 1;
@@ -86,17 +92,7 @@ def predict(tagged_path,raw_path):
                 # print(pre_tag)
                 # input()
             state_pretag_object_dict =  copy.deepcopy(state_tag_object_dict)
-            # print(state_pre_prob_dict)
-            # print()
-            # print(state_prob_dict)
             state_pre_prob_dict =  copy.deepcopy(state_prob_dict)
-            # for a in state_pretag_object_dict:
-            #     if state_pretag_object_dict[a].parent!=None:
-            #         print(a,state_pretag_object_dict[a].parent.val)
-            # print(state_pretag_object_dict)
-            # print("predict:",pre_tag)
-            # print(state_prob_dict)
-            # input()
         predict_last_tag=max(state_prob_dict, key=state_prob_dict.get)
         cur_object=state_tag_object_dict[predict_last_tag]
         predict_tag_list=[]
@@ -105,11 +101,22 @@ def predict(tagged_path,raw_path):
             predict_tag_list.insert(0,cur_object.val)
             cur_object = cur_object.parent
             # predict_last_tag=predict_last_tag.parent
-        print("GT:",groundtru)
-        print("PT:",predict_tag_list[2:])
+        # print("GT:",groundtru)
+        word_list=sentence.split()
+        predict_tag_list=predict_tag_list[2:]
 
-        print("sentence end")
-        input()
+        for i in range(len(sentence.split())):
+            result_str+=word_list[i]+"/"+predict_tag_list[i]+" "
+        if iii<len(raw_split)-1:
+            result_str+="\n"
+        # print(result_str)
+        # print(len(sentence.split()),sentence.split())
+        # print(len(predict_tag_list[2:]),predict_tag_list[2:])
+        # print()
+        # print("sentence end")
+
+        # input()
+    f_outout.write(result_str)
 
 
 
@@ -130,4 +137,4 @@ if __name__ == "__main__":
             word_set.add(word)
     tagged_path = "./hmm-training-data/ja_gsd_dev_tagged.txt"
     raw_path = "./hmm-training-data/ja_gsd_dev_raw.txt"
-    predict(tagged_path,raw_path)
+    predict(arg[1])
