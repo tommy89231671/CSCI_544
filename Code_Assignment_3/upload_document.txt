@@ -1,0 +1,26 @@
+Complete this document and upload along with your prediction results and your code.
+
+### Method Name ###
+
+cipherword word2vec + Self-Attention
+
+### Representation of sentence ###
+
+Trained a word2vec on only cipherword text. Concatenate all word embeddings to represent a sentence.
+
+### Classifier ###
+
+First, train a word2vec to embedding a sentence. Second, using self-attention model with TransformerEncoder layer. Then, do dimension reduction to 1d and use sigmoid function.
+
+### Training & Development ###
+
+Compare the rounding number from output to ground truth label. Binary cross entropy, SGD are the loss function and optimizer. Learning rate = 0.01. Terminate the training when going through all the training data.
+
+### Other methods ###
+
+LSTM.
+
+### Packages ###
+
+Pytorch
+gensim
